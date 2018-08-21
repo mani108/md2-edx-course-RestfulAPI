@@ -1,43 +1,41 @@
-const express = require('express') 
-const logger = require('morgan')
-const errorhandler = require('errorhandler')
-const bodyParser = require('body-parser')
-const routesPosts = require('./routes/Posts');
-const routesComments = require('./routes/comments');
-let app = express();
-
-app.use(bodyParser.json())
-app.use(logger('dev'))
-app.use(errorhandler())
+const express = require('express');
+const logger = require('morgan');
+const errorhandler = require('errorhandler');
+const bodyParser = require('body-parser');
+const routes = require('./routes');
 
 let store = {
     posts: [
-      {name: 'Top 10 ES6 Features every Web Developer must know',
-      url: 'https://webapplog.com/es6',
-      text: 'This essay will give you a quick introduction to ES6. If you don’t know what is ES6, it’s a new JavaScript implementation.',
-      comments: [
-        {text: 'Cruel…..var { house, mouse} = No type optimization at all'},
-        {text: 'I think you’re undervaluing the benefit of ‘let’ and ‘const’.'},
-        {text: '(p1,p2)=>{ … } ,i understand this ,thank you !'  }
-          
-      ]
-      }
+        {name: 'Top 10 ES6 Features every Web Developer must know',
+        url: 'https//webapplog.com/es6',
+        text: 'This essay will give you a quick intoduction to ES6.',
+        comments:[
+            {text: 'Cruel... var {house, mouse} = No type optimization at all'},
+            {text: 'I think you are undervaluing the benefit of let and const.'},
+            {text: '(p1,p2)=>{...}, i understand this, thank you !'}
+        ]
+    }
     ]
-  }
+}
 
-  app.use((req , res,next)=>{ 
-      req.store = store; 
-      next()
-    })
-//
-app.get('/posts',routesPosts.getPosts);
-app.post('/posts',routesPosts.addPost);
-app.put('/posts/:postId',routesPosts.updatePost);
-app.delete('/posts/:postId',routesPosts.removePost);
+let app = express();
 
-app.get('/posts/:postId/comments',routesComments.getComments);
-app.post('/posts/:postId/comments',routesComments.addComment);
-app.put('/posts/:postId/comments/:commentId',routesComments.updateComment);
-app.put('/posts/:postId/comments/:commentId',routesComments.removeComment);
- 
+app.use(bodyParser.json());
+app.use(logger('dev'));
+app.use(errorhandler());
+app.use((req, res, next) =>{
+    req.store = store;
+    next();
+});
+
+app.get('./posts', routes.posts.getPosts);
+app.post('./posts', routes.posts.addPost);
+app.put('/posts/:postId', routes.posts.updatePost);
+app.delete('/posts/:postId', routes.posts.removePost);
+
+app.get('/posts/:postId/comments',routes.comments.getComments);
+app.post('/posts/:postId/comments', routes.comments.addComment);
+app.put('/posts/:postId/comments/:commentId', routes.comments.updateComment);
+app.delete('/posts/:postId/comments/:commentsId', routes.comments.removeComment);
+
 app.listen(3000);
